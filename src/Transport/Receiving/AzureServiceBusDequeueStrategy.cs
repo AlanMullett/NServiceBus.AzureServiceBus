@@ -35,7 +35,7 @@ namespace NServiceBus.Azure.Transports.WindowsAzureServiceBus
         {
             this.topology = topology;
             this.criticalError = criticalError;
-            circuitBreaker = new RepeatedFailuresOverTimeCircuitBreaker("AzureStoragePollingDequeueStrategy", TimeSpan.FromSeconds(30), ex => criticalError.Raise(string.Format("Failed to receive message from Azure ServiceBus."), ex));
+            circuitBreaker = new RepeatedFailuresOverTimeCircuitBreaker("AzureStoragePollingDequeueStrategy", TimeSpan.FromSeconds(30), ex => criticalError.Raise("Failed to receive message from Azure ServiceBus.", ex));
         }
 
         public int BatchSize { get; set; }
@@ -103,7 +103,7 @@ namespace NServiceBus.Azure.Transports.WindowsAzureServiceBus
 
             while (!cancellationToken.IsCancellationRequested)
             {
-                BrokeredMessage brokeredMessage = pendingMessages.Take(cancellationToken);
+                var brokeredMessage = pendingMessages.Take(cancellationToken);
 
                 if (cancellationToken.IsCancellationRequested)
                 {
